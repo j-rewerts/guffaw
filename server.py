@@ -1,10 +1,15 @@
 from flask import Flask, request, render_template
-app = Flask(__name__)
+from flask_pymongo import PyMongo
 
+app = Flask(__name__)
 
 @app.route('/joke/random')
 def Punch():
     return '{"text": "this is a joke"}'
+app.config['MONGO_DBNAME'] = 'dev'
+app.config['MONGO_URI'] = 'mongodb://guffaw:chuckles@cluster0-shard-00-00-md5j0.mongodb.net:27017,cluster0-shard-00-01-md5j0.mongodb.net:27017,cluster0-shard-00-02-md5j0.mongodb.net:27017/dev?authSource=admin&replicaSet=Cluster0-shard-0&ssl=true'
+
+mongo = PyMongo(app)
 
 @app.route('/')
 def display():
@@ -12,7 +17,9 @@ def display():
 
 @app.route('/joke')
 def Joke():
-    return '<h2> What did 0 say to 8 <h2/>'
+    joke = mongo.db.jokes.find({})
+    print(joke.next());
+    return '<h2> Joke Page<h2/>'
 
 
 if __name__== '__main__':
