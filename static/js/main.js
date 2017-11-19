@@ -1,8 +1,7 @@
 function reqListener () {
   console.log(this.responseText);
   var name = JSON.parse(this.responseText);
-  joke.innerHTML=name.text;
-
+  joke.innerHTML=name[0].text;
 }
 
 var button = document.getElementById("button");

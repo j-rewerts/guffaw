@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
 from flask_pymongo import PyMongo
+from bson import json_util
 
 app = Flask(__name__)
 
@@ -9,8 +10,10 @@ app.config['MONGO_URI'] = 'mongodb://guffaw:chuckles@cluster0-shard-00-00-md5j0.
 
 @app.route('/joke/random')
 def Punch():
-    joke = mongo.db.jokes.find({})
-    return joke.next()
+    joke = mongo.db.jokes.aggregate(
+       [ { '$sample': { 'size': 1 } } ]
+    )
+    return json_util.dumps(joke)
 
 mongo = PyMongo(app)
 
